@@ -19,6 +19,7 @@ rule Linux_Kinsing_Malware {
 
 
 rule Cryptomining_Malware_Xmrig {
+   meta:
       description = "Detects Xmrig Cryptominer"
       author = "cdoman@cadosecurity.com"
       date = "2021-12-11"
