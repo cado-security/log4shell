@@ -1,0 +1,63 @@
+
+rule Linux_Kinsing_Malware {
+   meta:
+      description = "Detects Kinsing Malware"
+      author = "cdoman@cadosecurity.com"
+      date = "2021-12-11"
+      license = "Apache License 2.0"
+      hash1 = "6e25ad03103a1a972b78c642bac09060fa79c460011dc5748cbb433cc459938b"
+    strings:
+      $a1 = "main.goKrongo" ascii
+      $a2 = "main.taskWithScanWorker" ascii
+      $a3 = "main.runTaskWithHttp" ascii
+      $a5 = "main.getMinerPid" ascii
+      $a6 = "main.sendResult" ascii
+      $a7 = "main.minerRunningCheck" ascii
+   condition:
+      uint16(0) == 0x457f and 4 of them
+}
+
+
+rule Cryptomining_Malware_Xmrig {
+      description = "Detects Xmrig Cryptominer"
+      author = "cdoman@cadosecurity.com"
+      date = "2021-12-11"
+      license = "Apache License 2.0"
+   strings:
+      $ = "password for mining server" nocase wide ascii
+      $ = "threads count to initialize RandomX dataset" nocase wide ascii
+      $ = "display this help and exit" nocase wide ascii
+      $ = "maximum CPU threads count (in percentage) hint for autoconfig" nocase wide ascii
+      $ = "enable CUDA mining backend" nocase wide ascii
+      $ = "cryptonight" nocase wide ascii
+   condition:
+      5 of them
+}
+
+
+rule Mining_Worm_August_2020 {
+
+   meta:
+      description = "Detects Mining Worm"
+      author = "cdoman@cadosecurity.com"
+      date = "2020-08-16"
+      license = "Apache License 2.0"
+      hash1 = "3a377e5baf2c7095db1d7577339e4eb847ded2bfec1c176251e8b8b0b76d393f"
+      hash2 = "929c3017e6391b92b2fbce654cf7f8b0d3d222f96b5b20385059b584975a298b"
+      hash3 = "705a22f0266c382c846ee37b8cd544db1ff19980b8a627a4a4f01c1161a71cb0"
+
+   strings:
+      $a = "echo $LOCKFILE | base64 -d > $tmpxmrigfile" wide ascii
+      $b = "/root/.tmp/xmrig –config=/root/.tmp/" wide ascii
+      $c = "if [ -s /usr/bin/curl ]; then" wide ascii
+      $d = "echo ‘found: /root/.aws/credentials'" wide ascii
+      $e = "function KILLMININGSERVICES(){" wide ascii
+      $g = "touch /root/.ssh/authorized_keys 2>/dev/null 1>/dev/null" wide ascii
+      $h = "rm -rf /etc/init.d/agentwatch /usr/sbin/aliyun-service" wide ascii
+      $i = "userfile=@/root/.ssh/id_ed25519.pub" wide ascii
+
+   condition:
+
+      filesize < 500KB and any of them
+
+}
